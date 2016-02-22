@@ -33,3 +33,4 @@ echo ${tableau[2]}
 
 menu3
 menu2
+t
