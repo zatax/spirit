@@ -59,6 +59,23 @@ do
 done
 }
 
+
+#################################
+#--------- création UID---------#
+#################################
+
+
+UID () {
+        UID=""
+        while [[ -z $uid ]]; do
+                read -p "UID Total : " uid 
+        done
+        echo $uid
+
+}
+
+
+
 #################################
 #--------- création IGG---------#
 #################################
@@ -72,6 +89,25 @@ igg () {
 	echo $IGG
 
 }
+
+
+#################################
+#------ creation GID -----------#
+#################################
+
+
+
+gid () {
+        gid=""
+        while [[ -z $gid ]]; do
+                read -p "gid Total : " gid 
+        done
+        echo $gid
+
+}
+
+
+
 
 ####################################
 #------ fonction check yes/no -----#
@@ -133,7 +169,7 @@ confirm () {
 }
 
 #######################
-#-----check Rool------#
+#-----check Root------#
 #######################
 
 root () {
@@ -148,9 +184,25 @@ root () {
 ####################################
 
 
-file="serv.txt"
-i=1
-for line in $(cat serv.txt); do
-	echo "${i})${line}"
-	((i++))
-done  
+menu1 () {
+serv=$(cat serv.txt)
+tableau=( ${serv//./ } )
+
+eval set ${tableau[@]}
+select opt in "$@" 
+do
+echo $opt  
+if [ "$opt"="quit" ]; then
+        break
+fi
+done 
+} 
+
+
+
+
+
+igg
+
+est={jd++$igg}
+echo "$est" 
