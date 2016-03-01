@@ -202,7 +202,3 @@ done
 
 
 
-igg
-
-est={jd++$igg}
-echo "$est" 
