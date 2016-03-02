@@ -65,15 +65,15 @@ done
 #################################
 
 
-UID () {
-        UID=""
-        while [[ -z $uid ]]; do
-                read -p "UID Total : " uid 
+
+UID2 () {
+        UID2=""
+        while [[ -z $UID2 ]]; do
+                read -p "UID Total : " UID2
         done
-        echo $uid
+        echo $UID2
 
 }
-
 
 
 #################################
@@ -81,12 +81,13 @@ UID () {
 #################################
 
 
-igg () {
+IGG () {
 	IGG=""
 	while [[ -z $IGG ]]; do
 		read -p "IGG Total : " IGG
 	done
-	echo $IGG
+	igguid="$IGG$UID2"
+	echo $igguid
 
 }
 
@@ -200,5 +201,34 @@ done
 
 
 
-l
+#################################
+#------ creation HOME -----------#
+#################################
+
+
+
+home () {
+        home=""
+        while [[ -z $home ]]; do
+                read -p "répertoire HOME : " home 
+        done
+        echo $home
+
+}
+
+
+###################################
+#------- Verif User --------------#
+###################################
+
+#if [ -n "$(grep $user /etc/passwd)"] then
+#...
+#fi
+
+
+
+menu1
+
+echo $opt
+
 
