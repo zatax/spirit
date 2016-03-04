@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 
 ######################################
 #-----------variable------------------
@@ -57,39 +57,30 @@ do
         *) echo invalid option;;
     esac
 done
-}
-
-
-#################################
-#--------- création UID---------#
-#################################
+	}
 
 
 
-UID2 () {
-        UID2=""
-        while [[ -z $UID2 ]]; do
-                read -p "UID Total : " UID2
-        done
-        echo $UID2
 
-}
-
-
-#################################
-#--------- création IGG---------#
-#################################
-
+#############################################
+#---------- création IGG - UID  ------------#
+#    					    #
+#	UID = IGG du compte moins les	    # 
+#	      les deux premièrs caractères  #
+#					    #
+#############################################
 
 IGG () {
 	IGG=""
 	while [[ -z $IGG ]]; do
 		read -p "IGG Total : " IGG
 	done
-	igguid="$IGG$UID2"
-	echo $igguid
+	echo $IGG
+	
+	UID2=${IGG:2}
+	
+	}
 
-}
 
 
 #################################
@@ -99,13 +90,14 @@ IGG () {
 
 
 gid () {
-        gid=""
+        echo "Identifiant unique de compte (GID)"
+	gid=""
         while [[ -z $gid ]]; do
-                read -p "gid Total : " gid 
+                read -p "GID : " gid 
         done
         echo $gid
 
-}
+	}
 
 
 
@@ -128,7 +120,7 @@ Check () {
                   	;;
                   	* ) echo "invalid";;
         	esac
-}
+	}
 
 
 #############################################
@@ -154,7 +146,7 @@ fi
         while [[ -z $group ]]; do
                 read -p "Groupe de l'utilisateur : " group
         done
-}
+	}
 
 
 #################################
@@ -167,7 +159,7 @@ confirm () {
 	read reponse
 	if [ $reponse =  "Y" ] ;then return 0 ; else return 1 ; fi
 
-}
+	}
 
 #######################
 #-----check Root------#
@@ -178,7 +170,7 @@ root () {
     		echo "Vous devez être root pour executer ce script"
     		exit 1
 	fi
-}
+	}
 
 ####################################
 #------ choix serv TXT -------------
@@ -186,18 +178,19 @@ root () {
 
 
 menu1 () {
-serv=$(cat serv.txt)
-tableau=( ${serv//./ } )
+	echo "Choix du serveur"
+	serv=$(cat serv.txt)
+	tableau=( ${serv//./ } )
 
-eval set ${tableau[@]}
-select opt in "$@" 
-do
-echo $opt  
-if [ "$opt"="quit" ]; then
-        break
-fi
-done 
-} 
+	eval set ${tableau[@]}
+	select opt in "$@" 
+	do
+		echo $opt  
+			if [ "$opt"="quit" ]; then
+        		break
+			fi
+	done 
+	} 
 
 
 
@@ -208,13 +201,14 @@ done
 
 
 home () {
-        home=""
+        echo "choix de la home"
+	home=""
         while [[ -z $home ]]; do
                 read -p "répertoire HOME : " home 
         done
         echo $home
 
-}
+	}
 
 
 
@@ -226,15 +220,35 @@ home () {
 
 
 INC () {
-        INC=""
+	echo "INC compte Total"
+	INC=""
         while [[ -z $INC ]]; do
-                read -p "INC compte  Total : " INC 
+                read -p "Numéro INC: " INC 
         done
         echo $INC
 
-}
+	}
 
 
+
+
+
+###################################
+#------- NOM - PRENOM-------------#
+###################################
+
+name () {
+	echo
+	NOM=""
+	PRENOM=""
+	while [[ -z $NOM  ]] || [[ -z $PRENOM ]]; do 
+                read -p "NOM : " NOM 
+                read -p "PRENOM : " PRENOM
+        done 
+        echo $NOM $PRENOM
+        }
+
+   
 ###################################
 #------- Verif User --------------#
 ###################################
@@ -243,8 +257,12 @@ INC () {
 #...
 #fi
 
+name
 
 
-
-
-
+while [[ -z $NOM  ]] || [[ -z $PRENOM ]]; do 
+                read -p "NOM : " NOM 
+                read -p "PRENOM : " PRENOM
+        done 
+        echo $NOM $PRENOM
+        }   
