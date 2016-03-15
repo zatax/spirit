@@ -36,7 +36,7 @@
 #       name	: NOM et PRENOM		#
 #       home	: HOME 			#
 #       INC	: INC			#
-#       GID     : GID			#
+#       GID     : création GROUPE	#
 #	IGG	: IGG			#
 #					#
 #---------------------------------------#
@@ -142,6 +142,13 @@ gid () {
         done
         echo $gid
 
+	if grep "^$gid" /etc/group > /dev/null; then
+                echo "Le groupe n'existe pas, réaffectez l’incident à EP.UNIX-LINUX-EP" 
+        	exit
+		else
+                echo "Groupe OK"
+        fi
+
         }   
 
 
@@ -165,11 +172,22 @@ IGG () {
 
         }
 
+#########################################
+#---------          SCRIPT      --------#
+#					#
+#########################################
 
-TIGG () {
-	
-	gid 
-
+main () {
+	root
+	menu1
+	#Sudo ssh $opt
+	INC
+	name
+	home	
+	gid
+	GID
+	/usr/sbin/useradd -c "$inc $NOM $PRENOM" -d $home -s /bin/bash -g $GID -u $UID2 $IGG
+	/usr/bin/passwd $IGG 	
 }
 
-TIGG
+main
