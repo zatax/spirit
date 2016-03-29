@@ -11,7 +11,7 @@
 
 #########################################
 #					#
-#-------|    variables  | --------------#
+#-------|    variables  |---------------#
 #					#
 #					#
 #       Serveur : $opt			# 
@@ -28,7 +28,7 @@
 
 #########################################
 #					#
-#--------|    Fonction   | -------------#
+#--------|    Fonction   |--------------#
 #					#
 #					#
 #       ROOT	: Check ROOT		#
@@ -63,28 +63,21 @@ root () {
 #------ choix serv TXT -------------
 ####################################
 
+SelectServeurDistant () {
 
-menu1 () {
-        echo "Choix du serveur"
-        serv=$(cat serv.txt)
-        tableau=( ${serv//./ } ) 
-
-        eval set ${tableau[@]}
-        select opt in "$@" 
-        do  
-                echo $opt  
-                        if [ "$opt"="quit" ]; then
-                        break
-                        fi  
-        done 
-        }   
+PS3="Choix du serveur"
+select serveur in `cat serv.txt`
+  do echo $serveur
+  break
+  done
+}
 
 
 ###################################
 #------- NOM - PRENOM-------------#
 ###################################
 
-name () {
+NomPrenomUser () {
         echo
         NOM=""
         PRENOM=""
@@ -101,7 +94,7 @@ name () {
 
 
 
-home () {
+selectRepHome () {
         echo "choix de la home"
         home=""
         while [[ -z $home ]]; do
@@ -117,7 +110,7 @@ home () {
 
 
 
-INC () {
+IncidentItsm () {
         echo "INC compte Total"
         INC=""
         while [[ -z $INC ]]; do
@@ -134,7 +127,7 @@ INC () {
 #################################
 
 
-gid () {
+IdentifiantUniqueGroupe () {
         echo "Identifiant unique de compte (GID)"
         gid=""
         while [[ -z $gid ]]; do
@@ -161,7 +154,7 @@ gid () {
 #############################################
 
 
-IGG () {
+CompteUtilisateurTotal () {
         IGG=""
         while [[ -z $IGG ]]; do
                 read -p "IGG Total : " IGG
@@ -173,19 +166,19 @@ IGG () {
         }
 
 #########################################
-#---------          SCRIPT      --------#
+#---------        SCRIPT        --------#
 #					#
 #########################################
 
 main () {
 	root
 	menu1
-	#Sudo ssh $opt
+	sudo ssh $opt
 	INC
 	name
 	home	
 	gid
-	GID
+	IGG
 	/usr/sbin/useradd -c "$inc $NOM $PRENOM" -d $home -s /bin/bash -g $GID -u $UID2 $IGG
 	/usr/bin/passwd $IGG 	
 }
