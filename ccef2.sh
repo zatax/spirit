@@ -1,30 +1,15 @@
-#!/bin/bash 
+#!/bin/bash  
+
 
 
 #---------------------------------------#
 #					#
 #	    CREATION COMPTE		#
-#	      ENGINE FRAME		#
+#	      ENGIN FRAME		#
 #		  TOTAL			#
 #					#
 #---------------------------------------#
 
-#########################################
-#					#
-#-------|    variables  |---------------#
-#					#
-#					#
-#       Serveur : $opt			# 
-#	NOM	: $NOM			#
-#       PRENOM	: $PRENOM		#
-#       HOME	: $HOME			#
-#       INC	: $INC			#
-#	GID	: $gid			#
-#	IGG	: $IGG			#
-#	UID	: $UID2			#
-#					#
-#---------------------------------------#
-#########################################
 
 #########################################
 #					#
@@ -49,7 +34,7 @@
 #-----check Root------#
 #######################
 
-root () {
+AccesRoot () {
         if [ "$(id -u)" != "0" ]; then
                 echo "Vous devez être root pour executer ce script"
                 exit 1
@@ -60,14 +45,14 @@ root () {
 
 
 ####################################
-#------ choix serv TXT -------------
+#------ choix serveur distant -----#
 ####################################
 
 SelectServeurDistant () {
 
 PS3="Choix du serveur"
-select serveur in `cat serv.txt`
-  do echo $serveur
+select SERVEUR in `cat serv.txt`
+  do echo $SERVEUR
   break
   done
 }
@@ -77,15 +62,16 @@ select serveur in `cat serv.txt`
 #------- NOM - PRENOM-------------#
 ###################################
 
-NomPrenomUser () {
+SelectNameUser () {
         echo
         NOM=""
         PRENOM=""
         while [[ -z $NOM  ]] || [[ -z $PRENOM ]]; do
-                read -p "NOM : " NOM
-                read -p "PRENOM : " PRENOM
-        done
-        echo $NOM $PRENOM
+                read -p "NOM : " | tr ‘[A-Z]’ ‘[a-z]’ NOM
+                read -p "PRENOM : " PRENOM 
+        
+	done
+        echo $NOM $PRENOM 
         }
 
 #################################
@@ -94,13 +80,13 @@ NomPrenomUser () {
 
 
 
-selectRepHome () {
+SelectRepHome () {
         echo "choix de la home"
-        home=""
-        while [[ -z $home ]]; do
-                read -p "répertoire HOME : " home
+        homedir=""
+        while [[ -z $HOMEDIR ]]; do
+                read -p "répertoire HOME : " HOMEDIR
         done
-        echo $home
+        echo $HOMEDIR
 
         }
 
@@ -112,11 +98,11 @@ selectRepHome () {
 
 IncidentItsm () {
         echo "INC compte Total"
-        INC=""
-        while [[ -z $INC ]]; do
-                read -p "Numéro INC: " INC
+        ITSM=""
+        while [[ -z $ITSM ]]; do
+                read -p "Numéro INC: " ITSM
         done
-        echo $INC
+        echo $ITSM
 
         }
 
@@ -129,13 +115,13 @@ IncidentItsm () {
 
 IdentifiantUniqueGroupe () {
         echo "Identifiant unique de compte (GID)"
-        gid=""
-        while [[ -z $gid ]]; do
-                read -p "GID : " gid 
+        IDGroup=""
+        while [[ -z $IDGROUP ]]; do
+                read -p "GID : " IDGROUP 
         done
-        echo $gid
+        echo $IDGROUP
 
-	if grep "^$gid" /etc/group > /dev/null; then
+	if grep "^$IDGROUP" /etc/group > /dev/null; then
                 echo "Le groupe n'existe pas, réaffectez l’incident à EP.UNIX-LINUX-EP" 
         	exit
 		else
@@ -148,20 +134,17 @@ IdentifiantUniqueGroupe () {
 #############################################
 #---------- création IGG - UID  ------------#
 #                                           #
-#       UID = IGG du compte moins les       # 
-#             les deux premièrs caractères  #
-#                                           #
 #############################################
 
 
 CompteUtilisateurTotal () {
-        IGG=""
-        while [[ -z $IGG ]]; do
-                read -p "IGG Total : " IGG
+        CompteTotal=""
+        while [[ -z $COMPTETOTAL ]]; do
+                read -p "IGG Total : " COMPTETOTAL
         done
-        echo $IGG
+        echo $COMPTETOTAL
 
-        UID2=${IGG:2} 
+        COMPTEUTILISATEUR=${COMPTETOTAL:2} 
 
         }
 
@@ -171,16 +154,15 @@ CompteUtilisateurTotal () {
 #########################################
 
 main () {
-	root
-	menu1
-	sudo ssh $opt
-	INC
-	name
-	home	
-	gid
-	IGG
-	/usr/sbin/useradd -c "$inc $NOM $PRENOM" -d $home -s /bin/bash -g $GID -u $UID2 $IGG
-	/usr/bin/passwd $IGG 	
-}
-
-main
+#	AccesRoot
+	SelectServeurDistant
+	IncidentItsm
+	IdentifiantUniqueGroupe	
+	SelectNameUser
+	SelectRepHome	
+	CompteUtilisateurTotal
+	ssh $SERVEUR  "
+	/usr/sbin/useradd -c "$ITSM $NOM $PRENOM" -d $HOMEDIR -s /bin/bash -g $IDGROUP -u $COMPTUTILISATEUR $COMPTETOTAL;
+	/usr/bin/passwd $COMPTETOTAL;" 	
+}  	
+main #>> "fichier1.log" 2 >> "fichier2.log" 
