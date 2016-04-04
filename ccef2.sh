@@ -63,11 +63,10 @@ select SERVEUR in `cat serv.txt`
 ###################################
 
 SelectNameUser () {
-        echo
         NOM=""
         PRENOM=""
         while [[ -z $NOM  ]] || [[ -z $PRENOM ]]; do
-                read -p "NOM : " | tr ‘[A-Z]’ ‘[a-z]’ NOM
+                read -p "NOM : "  NOM
                 read -p "PRENOM : " PRENOM 
         
 	done
@@ -124,7 +123,7 @@ IdentifiantUniqueGroupe () {
 	if grep "^$IDGROUP" /etc/group > /dev/null; then
                 echo "Le groupe n'existe pas, réaffectez l’incident à EP.UNIX-LINUX-EP" 
         	exit
-		else
+	else
                 echo "Groupe OK"
         fi
 
@@ -154,6 +153,7 @@ CompteUtilisateurTotal () {
 #########################################
 
 main () {
+	stderr="fichier_$(date +"%Y%m%d-%H%M%S").log"
 #	AccesRoot
 	SelectServeurDistant
 	IncidentItsm
@@ -162,7 +162,11 @@ main () {
 	SelectRepHome	
 	CompteUtilisateurTotal
 	ssh $SERVEUR  "
-	/usr/sbin/useradd -c "$ITSM $NOM $PRENOM" -d $HOMEDIR -s /bin/bash -g $IDGROUP -u $COMPTUTILISATEUR $COMPTETOTAL;
-	/usr/bin/passwd $COMPTETOTAL;" 	
+	/usr/sbin/useradd -c '$ITSM $NOM $PRENOM' -d $HOMEDIR -s /bin/bash -g $IDGROUP -u $COMPTUTILISATEUR $COMPTETOTAL;
+	/usr/bin/passwd $COMPTETOTAL;" 2>> $stderr ; if [[ $? != 0 ]]; then echo "ERROR : $(cat ${stderr})" ;fi 	
 }  	
-main #>> "fichier1.log" 2 >> "fichier2.log" 
+#main >> "fichier1.log" 2 >> "fichier2.log"
+
+main | tee -a "fichier1.log" 
+
+
